@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Leitura de JSON</title>
+</head>
+<body>
+    <div>
+        <label for="cep">Digite o CEP:</label>
+        <input type="text" id="cep" name="cep">
+        <button onclick="buscarEndereco()">Buscar</button>
+    </div>
+    <div id="resultado"></div>
+
+    <script>
+        // Função para fazer a requisição AJAX
+        function buscarEndereco() {
+            // Pega o valor do CEP digitado pelo usuário
+            var cep = document.getElementById('cep').value;
+
+            // URL para a consulta do CEP
+            var url = 'https://viacep.com.br/ws/' + cep + '/json/';
+
+            // Criação do objeto XMLHttpRequest
+            var xhr = new XMLHttpRequest();
+
+            // Configuração da requisição
+            xhr.open('GET', url, true);
+
+            // Função de callback que será chamada quando a requisição for concluída
+            xhr.onload = function() {
+                // Verifica se a requisição foi bem sucedida (status 200)
+                if (xhr.status === 200) {
+                    // Converte a resposta (JSON) para um objeto JavaScript
+                    var endereco = JSON.parse(xhr.responseText);
+
+                    // Exibe os dados na página HTML
+                    exibirEndereco(endereco);
+                } else {
+                    // Exibe uma mensagem de erro se a requisição falhar
+                    document.getElementById('resultado').innerHTML = 'Erro ao buscar o endereço para o CEP informado.';
+                }
+            };
+
+            // Envia a requisição
+            xhr.send();
+        }
+
+        // Função para exibir os dados do endereço na página HTML
+        function exibirEndereco(endereco) {
+            var resultado = document.getElementById('resultado');
+            resultado.innerHTML = `
+                <p><strong>CEP:</strong> ${endereco.cep}</p>
+                <p><strong>Logradouro:</strong> ${endereco.logradouro}</p>
+                <p><strong>Complemento:</strong> ${endereco.complemento}</p>
+                <p><strong>Bairro:</strong> ${endereco.bairro}</p>
+                <p><strong>Localidade:</strong> ${endereco.localidade}</p>
+                <p><strong>UF:</strong> ${endereco.uf}</p>
+                <p><strong>IBGE:</strong> ${endereco.ibge}</p>
+                <p><strong>GIA:</strong> ${endereco.gia}</p>
+                <p><strong>DDD:</strong> ${endereco.ddd}</p>
+                <p><strong>SIAFI:</strong> ${endereco.siafi}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
